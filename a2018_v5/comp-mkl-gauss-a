@@ -1,0 +1,31 @@
+#!/bin/csh
+set FC = ifort
+
+# debug:
+#set FFLAGS = '-debug -traceback -CB -align'
+
+# run:
+set FFLAGS = '-qopenmp -O2 -mp1 -ftz -align'
+
+set GUIDE = guide
+set LAPACK = mkl_lapack95_lp64
+set BLAS = mkl_blas95_lp64
+set MKL = mkl
+
+set INCLUDEDIR = $MKLROOT/include/intel64/lp64/
+set LIBDIR = $MKLROOT/lib/intel64/
+
+#set INCLUDEDIR = /opt/intel/mkl/include/intel64/lp64/
+#set LIBDIR = /opt/intel/mkl/lib/intel64/
+
+$FC $FFLAGS -c precision.f90
+$FC $FFLAGS -c paramA_v6.f90
+#mk $FC $FFLAGS -c ioibm-f90.f
+$FC $FFLAGS -c ampoly_v2.f
+$FC $FFLAGS -c pseudo_v2.f
+$FC $FFLAGS -c poly-gaus_v8.f
+$FC $FFLAGS -c poly-conf_v8.f90
+$FC $FFLAGS -c cis_target_v2.f90
+$FC $FFLAGS -c apart_v6.f90
+
+$FC $FFLAGS -o a2018.x precision.o paramA_v6.o ampoly_v2.o pseudo_v2.o poly-conf_v8.o poly-gaus_v8.o cis_target_v2.o apart_v6.o -L$LIBDIR -I$INCLUDEDIR -lmkl_intel_lp64 -l$BLAS -l$LAPACK -qmkl -lmkl_intel_thread -qopenmp -lm
